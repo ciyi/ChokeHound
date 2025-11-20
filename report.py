@@ -148,9 +148,9 @@ def add_relationship_type_hyperlinks(worksheet, df):
 def color_risk_column(worksheet, df):
     """
     Color the RiskScore column based on risk levels:
-    - Red (high risk): >= 70
-    - Orange (medium risk): >= 40 and < 70
-    - Yellow (low risk): < 40
+    - Yellow (low risk): 1 to 30
+    - Orange (medium risk): 31 to 59
+    - Red (high risk): 60 to 100
     
     Args:
         worksheet: openpyxl Worksheet object
@@ -185,9 +185,9 @@ def color_risk_column(worksheet, df):
                 cell = worksheet[f"{col_letter}{row_idx}"]
                 
                 # Apply color based on risk level
-                if risk_value >= 70:
+                if risk_value >= 60:
                     cell.fill = red_fill
-                elif risk_value >= 40:
+                elif risk_value >= 31:
                     cell.fill = orange_fill
                 else:
                     cell.fill = yellow_fill

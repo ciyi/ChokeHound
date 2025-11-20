@@ -161,15 +161,18 @@ def calculate_risk_score(row, return_breakdown=False):
     relationship_risk = risk_config.get_relationship_type_risk(relationship_type)
     
     # Get target object risk (simplified label is a string, not a list)
-    # NOTE: Common default groups are NOT considered for target objects - only for source objects
+    # Check for privileged target groups (Domain Admins, Enterprise Admins, etc.)
     target_type = row.get('TargetType', '')
+    target_object_id = row.get('TargetObjectID', '')
+    # Handle None or NaN values from pandas
+    if pd.isna(target_object_id):
+        target_object_id = ''
+    
     if isinstance(target_type, str):
-        target_risk = risk_config.TARGET_OBJECT_CATEGORIES.get(
-            target_type,
-            risk_config.TARGET_OBJECT_CATEGORIES["default"]
-        )
+        # Use the helper function that checks for privileged target groups by SID
+        target_risk = risk_config.get_target_object_risk(target_type, target_object_id)
     else:
-        target_risk = risk_config.get_target_object_risk(target_type)
+        target_risk = risk_config.get_target_object_risk(target_type, target_object_id)
     
     # Get affected attack paths multiplier
     affected_paths = row.get('AffectedAttackPaths', 0)

@@ -50,6 +50,25 @@ COMMON_DEFAULT_GROUP_RIDS = {
     "Domain Guests": "514"      # RID 514
 }
 
+# Privileged target groups identified by SID (Security Identifier)
+# These groups have HIGHER risk when they are TARGETS of choke points
+# as they are commonly privileged and targeted by attackers
+# NOTE: This list is ONLY used for TARGET objects, NOT for source objects.
+
+# Well-known SIDs for privileged target groups (match by suffix pattern)
+# Format: ends with -S-1-X-Y
+PRIVILEGED_TARGET_GROUP_SID_PATTERNS = {
+    "Administrators (built-in)": "-S-1-5-32-544"  # Ends with -S-1-5-32-544, RID 544
+}
+
+# Domain-specific SIDs for privileged target groups (match by RID)
+# Format: S-1-5-21-<domainSID>-<RID>
+PRIVILEGED_TARGET_GROUP_RIDS = {
+    "Domain Admins": "512",           # RID 512, SID: S-1-5-21-<domain>-512
+    "Domain Controllers": "516",      # RID 516, SID: S-1-5-21-<domain>-516
+    "Enterprise Admins": "519"        # RID 519, SID: S-1-5-21-<forest-root-domain>-519
+}
+
 # Risk categories for Source Object types
 # Higher values indicate higher risk
 # Note: Domain objects should not appear as sources in choke points (they are Tier-0)
@@ -174,6 +193,7 @@ TARGET_OBJECT_CATEGORIES = {
     
     # Groups
     "Group": 8,  # Especially admin groups
+    "Group_PrivilegedTarget": 10,  # Privileged target groups (Domain Admins, Enterprise Admins, Domain Controllers, Administrators) - HIGHEST risk
     "LocalGroup": 6,
     
     # Containers
@@ -276,16 +296,18 @@ def get_relationship_type_risk(relationship_type):
     )
 
 
-def get_target_object_risk(target_labels):
+def get_target_object_risk(target_labels, target_object_id=None):
     """
-    Get risk category for target object based on its labels.
+    Get risk category for target object based on its labels and SID (Security Identifier).
     
-    NOTE: Common default groups are NOT considered for target objects.
-    All target groups use the standard "Group" risk category regardless of name.
+    NOTE: Privileged target groups (Domain Admins, Enterprise Admins, Domain Controllers, Administrators)
+    are checked for TARGET objects to give higher risk when choke points affect these groups.
     Common default group logic only applies to SOURCE objects.
     
     Args:
         target_labels: List of labels for the target object (e.g., ["Base", "Group"])
+        target_object_id: Optional SID (Security Identifier) of the target object
+                         Used to identify privileged target groups by SID pattern or RID
         
     Returns:
         Risk category value (int)
@@ -293,12 +315,50 @@ def get_target_object_risk(target_labels):
     if not target_labels:
         return TARGET_OBJECT_CATEGORIES["default"]
     
+    # Check if it's a privileged target group (HIGH RISK - commonly privileged and targeted)
+    # This check is for TARGET objects only
+    # Check if any label indicates it's a Group
+    is_group = False
+    if isinstance(target_labels, list):
+        is_group = "Group" in target_labels
+    elif isinstance(target_labels, str):
+        is_group = target_labels == "Group"
+    
+    if is_group and target_object_id:
+        # Convert to string and handle None/empty values
+        sid = str(target_object_id).strip() if target_object_id else ""
+        
+        if sid:
+            sid = sid.upper()  # Normalize to uppercase for comparison
+            
+            # Check well-known SID patterns for privileged target groups
+            # These SIDs end with specific patterns like -S-1-5-32-544
+            for group_name, pattern in PRIVILEGED_TARGET_GROUP_SID_PATTERNS.items():
+                pattern_upper = pattern.upper()
+                if sid.endswith(pattern_upper):
+                    return TARGET_OBJECT_CATEGORIES["Group_PrivilegedTarget"]
+            
+            # Check domain-specific SIDs by RID (Relative Identifier)
+            # Format: S-1-5-21-<domainSID>-<RID>
+            # Examples: "S-1-5-21-11398407-1185650032-2266222536-512" (Domain Admins)
+            # Extract the RID (last part after the last dash)
+            if sid.startswith("S-1-5-21-"):
+                # Split by dash and get the last part (RID)
+                sid_parts = sid.split("-")
+                if len(sid_parts) >= 4:  # At least S, 1, 5, 21, domain parts, and RID
+                    rid = sid_parts[-1]
+                    if rid in PRIVILEGED_TARGET_GROUP_RIDS.values():
+                        return TARGET_OBJECT_CATEGORIES["Group_PrivilegedTarget"]
+    
     # Check each label and return the highest risk category found
-    # NOTE: We do NOT check for common default group names - all groups get same risk as targets
     max_risk = TARGET_OBJECT_CATEGORIES["default"]
-    for label in target_labels:
-        if label in TARGET_OBJECT_CATEGORIES:
-            max_risk = max(max_risk, TARGET_OBJECT_CATEGORIES[label])
+    if isinstance(target_labels, list):
+        for label in target_labels:
+            if label in TARGET_OBJECT_CATEGORIES:
+                max_risk = max(max_risk, TARGET_OBJECT_CATEGORIES[label])
+    elif isinstance(target_labels, str):
+        if target_labels in TARGET_OBJECT_CATEGORIES:
+            max_risk = TARGET_OBJECT_CATEGORIES[target_labels]
     
     return max_risk
 
