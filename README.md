@@ -150,12 +150,17 @@ Set `LIMIT_CHOKE_POINTS` in `config.py` to control how many prioritized choke po
 
 ## References
 
-_To be completed later._
+[BloodHound Community Edition Quickstart](https://bloodhound.specterops.io/get-started/quickstart/community-edition-quickstart)
+
+[Tier Zero: Members and Modification](https://bloodhound.specterops.io/get-started/security-boundaries/tier-zero-members)
+
+[Microsoft Enterprise Access Model](https://learn.microsoft.com/en-us/security/privileged-access-workstations/privileged-access-access-model)
 
 
 ## Author
 
 [@ciyinet](https://x.com/ciyinet)
+
 [@gobispo](https://x.com/gobispo)
 
 
@@ -307,13 +312,16 @@ Ajusta `LIMIT_CHOKE_POINTS` en `config.py` para controlar cuántos Choke Points 
 
 ## Referencias
 
-_(Se completará próximamente)._
+[BloodHound Community Edition Quickstart](https://bloodhound.specterops.io/get-started/quickstart/community-edition-quickstart)
+
+[Tier Zero: Members and Modification](https://bloodhound.specterops.io/get-started/security-boundaries/tier-zero-members)
+
+[Microsoft Enterprise Access Model](https://learn.microsoft.com/en-us/security/privileged-access-workstations/privileged-access-access-model)
 
 
 ## Autor
 
 [@ciyinet](https://x.com/ciyinet)
+
 [@gobispo](https://x.com/gobispo)
-
-
 
