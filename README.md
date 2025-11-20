@@ -28,16 +28,16 @@ The following steps are required for ChokeHound to be able to produce meaningful
 1. **BloodHound CE installation**: Deploy BloodHound CE and confirm the Neo4j backend is initialized and reachable with valid credentials. [Instructions here](https://bloodhound.specterops.io/get-started/quickstart/community-edition-quickstart).
 2. **Data collection with SharpHound or AzureHound**: Run the official collectors and import the output into BloodHound CE: [SharpHound](https://bloodhound.specterops.io/collect-data/ce-collection/sharphound) on-prem / [AzureHound](https://bloodhound.specterops.io/collect-data/ce-collection/azurehound) for Entra ID.
 3. **Tier 0 configuration inside BloodHound**: Tag every Tier‑0 object with `Tag_Tier_Zero` so ChokeHound can differentiate privileged targets.
-  - In BloodHound CE -> Administration -> Configuration -> Early Access Features -> Enable Tier Management Engine​
-  - Add your Tier 0 oject in section "Privilege Zone Management". Tier 0 members to consider: [Tier Zero: Members and Modification](https://bloodhound.specterops.io/get-started/security-boundaries/tier-zero-members)
+    3.1. In BloodHound CE -> Administration -> Configuration -> Early Access Features -> Enable Tier Management Engine​
+    3.2. Add your Tier 0 oject in section "Privilege Zone Management". Tier 0 members to consider: [Tier Zero: Members and Modification](https://bloodhound.specterops.io/get-started/security-boundaries/tier-zero-members)
 ​
 
 ## Installation
 
 1. **Clone the repository**  
    ```bash
-   git clone https://github.com/your-username/ChokeHound.git
-   cd ChokeHound/Script
+   git clone https://github.com/ProtAAPP/ChokeHound.git
+   cd ChokeHound
    ```
 2. **Create and activate a virtual environment**
    - Windows (PowerShell)
@@ -195,16 +195,16 @@ Para que ChokeHound pueda producir resultados significativos, se requieren los s
 1. **Instalación de BloodHound CE**: Despliega BloodHound CE y confirma que Neo4j está inicializado y accesible con credenciales válidas. [Instrucciones aquí](https://bloodhound.specterops.io/get-started/quickstart/community-edition-quickstart). 
 2. **Recolección de datos con SharpHound o AzureHound**: Ejecuta los colectores de datos oficiales y sube los resultados a BloodHound CE. [SharpHound](https://bloodhound.specterops.io/collect-data/ce-collection/sharphound) on-prem / [AzureHound](https://bloodhound.specterops.io/collect-data/ce-collection/azurehound) para Entra ID.
 3. **Configuración de Tier 0 en BloodHound**: Etiqueta todos los objetos Tier‑0 con `Tag_Tier_Zero`; ChokeHound depende de esta clasificación.
-  - En BloodHound CE -> Administration -> Configuration -> Early Access Features -> Enable Tier Management Engine​
-  - Añade tus objectos Tier 0 en la sección "Privilege Zone Management". Tier 0 members to consider: [Tier Zero: Members and Modification](https://bloodhound.specterops.io/get-started/security-boundaries/tier-zero-members)
+    3.1. En BloodHound CE -> Administration -> Configuration -> Early Access Features -> Enable Tier Management Engine​
+    3.2. Añade tus objectos Tier 0 en la sección "Privilege Zone Management". Tier 0 members to consider: [Tier Zero: Members and Modification](https://bloodhound.specterops.io/get-started/security-boundaries/tier-zero-members)
 
 
 ## Instalación
 
 1. **Clonar el repositorio**  
    ```bash
-   git clone https://github.com/tu-usuario/ChokeHound.git
-   cd ChokeHound/Script
+   git clone https://github.com/ProtAAPP/ChokeHound.git
+   cd ChokeHound
    ```
 2. **Crear y activar un entorno virtual**
    - Windows (PowerShell)
