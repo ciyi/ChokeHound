@@ -8,11 +8,11 @@ ChokeHound analyzes BloodHound CE data to highlight choke points—privileged ed
 
 ## Features
 
-- Identify direct non–Tier‑0 → Tier‑0 privilege relationships.
+- Identify (critical) direct non–Tier‑0 → Tier‑0 privilege relationships.
 - Prioritize choke points using a weighted risk score.
 - Measure how many attack paths are affected per choke point.
-- Export clean Excel workbooks with formatted tables.
-- Produce a detailed text log explaining each risk calculation.
+- Export Excel report.
+- Optionally produce a detailed text log explaining each risk calculation.
 
 ## Prerequisites
 
@@ -22,6 +22,8 @@ ChokeHound analyzes BloodHound CE data to highlight choke points—privileged ed
 - Network access to the BloodHound Neo4j instance.
 
 ## Requirements Before Execution
+
+The following steps are required for ChokeHound to be able to produce meaningful results before executing it:
 
 1. **BloodHound CE installation**: Deploy BloodHound CE and confirm the Neo4j backend is initialized and reachable with valid credentials. [Instructions here](https://bloodhound.specterops.io/get-started/quickstart/community-edition-quickstart).
 2. **Data collection with SharpHound or AzureHound**: Run the official collectors and import the output into BloodHound CE: [SharpHound](https://bloodhound.specterops.io/collect-data/ce-collection/sharphound) on-prem / [AzureHound](https://bloodhound.specterops.io/collect-data/ce-collection/azurehound) for Entra ID.
@@ -106,7 +108,7 @@ Risk = (SourceObjectWeight × SourceObjectCategory) +
        (AffectedAttackPathsWeight × PathsMultiplier × 10)
 ```
 
-The resulting score is normalized to a 1–100 scale before being written to the Excel sheet, ensuring consistent comparison across findings.
+The resulting risk is normalized to a 1–100 scale, ensuring consistent comparison across findings.
 
 ## Troubleshooting
 
@@ -173,11 +175,11 @@ ChokeHound analiza datos de BloodHound CE para resaltar Choke Points: relaciones
 
 ## Características
 
-- Identifica relaciones directas entre objetos no Tier‑0 y Tier‑0.
+- Identifica relaciones (críticas) directas entre objetos no Tier‑0 y Tier‑0.
 - Prioriza cada Choke Point mediante una puntuación de riesgo ponderada.
 - Mide cuántas rutas de ataque se ven afectadas.
-- Exporta informes Excel con tablas formateadas.
-- Genera un log textual con el detalle de cada cálculo de riesgo.
+- Generación de informe en Excel.
+- Opcionalmente genera un log textual con el detalle de cada cálculo del riesgo.
 
 ## Requisitos Previos
 
@@ -187,6 +189,8 @@ ChokeHound analiza datos de BloodHound CE para resaltar Choke Points: relaciones
 - Acceso de red a la instancia de BloodHound.
 
 ## Requisitos Antes de la Ejecución
+
+Para que ChokeHound pueda producir resultados significativos, se requieren los siguientes pasos antes de su ejecución:
 
 1. **Instalación de BloodHound CE**: Despliega BloodHound CE y confirma que Neo4j está inicializado y accesible con credenciales válidas. [Instrucciones aquí](https://bloodhound.specterops.io/get-started/quickstart/community-edition-quickstart). 
 2. **Recolección de datos con SharpHound o AzureHound**: Ejecuta los colectores de datos oficiales y sube los resultados a BloodHound CE. [SharpHound](https://bloodhound.specterops.io/collect-data/ce-collection/sharphound) on-prem / [AzureHound](https://bloodhound.specterops.io/collect-data/ce-collection/azurehound) para Entra ID.
@@ -271,7 +275,7 @@ Riesgo = (PesoObjetoOrigen × CategoríaObjetoOrigen) +
          (PesoRutasAfectadas × MultiplicadorRutas × 10)
 ```
 
-La puntuación resultante se normaliza a un rango de 1–100 antes de escribirse en el informe para facilitar la comparación.
+El riesgo resultante se normaliza a un rango de 1–100 para facilitar la comparación.
 
 ## Solución de Problemas
 
