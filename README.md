@@ -37,24 +37,24 @@ ChokeHound es una herramienta de análisis de seguridad que identifica Choke Poi
    cd ChokeHound/Script
    ```
 
-2. **Instalar dependencias de Python**:
-   ```bash
-   pip install py2neo pandas openpyxl
-   ```
-   
-   O crear un archivo `requirements.txt` con el siguiente contenido:
-   ```
-   py2neo>=2021.2.3
-   pandas>=1.3.0
-   openpyxl>=3.0.9
-   ```
-   
-   Y luego instalar:
+2. **Crear y activar un entorno virtual**:
+   - **Windows (PowerShell)**:
+     ```powershell
+     python -m venv .venv
+     .\.venv\Scripts\Activate.ps1
+     ```
+   - **Linux / macOS**:
+     ```bash
+     python3 -m venv .venv
+     source .venv/bin/activate
+     ```
+
+3. **Instalar dependencias desde `requirements.txt`**:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Verificar que Neo4j esté ejecutándose**:
+4. **Verificar que Neo4j esté ejecutándose**:
    Asegúrate de que tu instancia de Neo4j con los datos de BloodHound esté ejecutándose y accesible.
 
 ### Configuración
@@ -279,6 +279,17 @@ Las contribuciones son bienvenidas. Por favor:
 4. Haz push a la rama (`git push origin feature/nueva-caracteristica`)
 5. Abre un Pull Request
 
+### TODO
+
+- Añadir soporte para Azure / Entra ID.
+- Analizar y estimar el riesgo de otros Choke Points que no impactan directamente Tier 0.
+- Seguir mejorando y ajustando la estimación de riesgo.
+- Configurar otros Tiers (no solo Tier 0).
+
+### Referencias
+
+_(Se completará próximamente)_
+
 ### Licencia
 
 [Especificar licencia aquí]
@@ -322,24 +333,24 @@ ChokeHound is a security analysis tool that identifies critical choke points in 
    cd ChokeHound/Script
    ```
 
-2. **Install Python dependencies**:
-   ```bash
-   pip install py2neo pandas openpyxl
-   ```
-   
-   Or create a `requirements.txt` file with the following content:
-   ```
-   py2neo>=2021.2.3
-   pandas>=1.3.0
-   openpyxl>=3.0.9
-   ```
-   
-   Then install:
+2. **Create and activate a virtual environment**:
+   - **Windows (PowerShell)**:
+     ```powershell
+     python -m venv .venv
+     .\.venv\Scripts\Activate.ps1
+     ```
+   - **Linux / macOS**:
+     ```bash
+     python3 -m venv .venv
+     source .venv/bin/activate
+     ```
+
+3. **Install dependencies from `requirements.txt`**:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Verify Neo4j is running**:
+4. **Verify Neo4j is running**:
    Make sure your Neo4j instance with BloodHound data is running and accessible.
 
 ### Configuration
@@ -563,6 +574,17 @@ Contributions are welcome. Please:
 3. Commit your changes (`git commit -am 'Add new feature'`)
 4. Push to the branch (`git push origin feature/new-feature`)
 5. Open a Pull Request
+
+### TODO
+
+- Add Azure / Entra ID support.
+- Analyze and estimate risk for other choke points that do not directly hit Tier 0.
+- Keep improving and tuning the risk estimation model.
+- Configure additional tiers (not only Tier 0).
+
+### References
+
+_To be completed later_
 
 ### License
 
