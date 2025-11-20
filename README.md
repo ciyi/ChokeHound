@@ -155,8 +155,8 @@ _To be completed later._
 
 ## Author
 
-@ciyinet
-@gobispo
+[@ciyinet](https://x.com/ciyinet)
+[@gobispo](https://x.com/gobispo)
 
 
 # ChokeHound - Analizador de Choke Points con BloodHound CE
@@ -312,5 +312,8 @@ _(Se completará próximamente)._
 
 ## Autor
 
-[Tu nombre/usuario de GitHub]
+[@ciyinet](https://x.com/ciyinet)
+[@gobispo](https://x.com/gobispo)
+
+
 
