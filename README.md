@@ -19,6 +19,17 @@ Choke points are critical privilege edges that connect non-Tier-0 objects to Tie
 - **Attack Path Analysis**: Understand how many attack paths are affected by each choke point
 - **Excel Reports**: Professional Excel reports with formatting, color-coding, and detailed documentation
 - **Relationship Documentation**: Automatic links to BloodHound documentation for each relationship type
+- **Path Analysis (BloodHound)**: Per–choke point links in Excel to open BloodHound CE with a pre-filled Cypher query for graph exploration (configurable `BLOODHOUND_URI`)
+
+## Changelog
+
+### 1.2.0
+
+- Excel **Path Analysis** column with hyperlinks to the BloodHound UI for each choke point (upstream paths + Tier‑0 edge).
+- Configurable BloodHound web URL: `BLOODHOUND_URI` in `chokehound/config/settings.py`.
+- CLI `--version` / `-V`.
+- Excel cover sheet shows ChokeHound version.
+- Safer URL generation when object IDs contain special characters.
 
 ## Prerequisites
 
@@ -74,6 +85,8 @@ NEO4J_URI = "bolt://localhost:7687"
 NEO4J_USER = "neo4j"
 NEO4J_PASSWORD = "bloodhoundcommunityedition"
 DEFAULT_OUTPUT_FILENAME = "ChokeHound_report.xlsx"
+# BloodHound CE web UI (Path Analysis links in Excel); use https if you terminate TLS locally
+BLOODHOUND_URI = "http://localhost:8080"
 ```
 
 ## Usage
@@ -112,6 +125,12 @@ python chokehound.py --skip-risk-calculation
 
 Runs the analysis without calculating risk scores. This provides faster execution and simpler output, with results sorted by the number of affected attack paths instead of risk score. Useful for quick scans or when you only need to identify choke points without prioritization.
 
+### Show Version
+
+```bash
+python chokehound.py --version
+```
+
 ## Architecture
 
 ChokeHound is built with a modular architecture:
@@ -130,7 +149,8 @@ chokehound/
 │   ├── settings.py    # Application settings
 │   └── risk_config.py # Risk scoring configuration
 └── utils/             # Utility functions
-    └── label_processor.py  # Label processing utilities
+    ├── label_processor.py  # Label processing utilities
+    └── bloodhound_url.py   # BloodHound UI URLs for Path Analysis
 ```
 
 ## Risk Calculation for Choke Points
@@ -161,10 +181,11 @@ Edit `SOURCE_OBJECT_CATEGORIES`, `RELATIONSHIP_TYPE_CATEGORIES`, and `TARGET_OBJ
 ### Change Hop Limit and Risk Weights
 
 All Tier 0 choke points configuration is located in `chokehound/config/settings.py`:
+- `BLOODHOUND_URI`: Base URL of the BloodHound CE web UI for Path Analysis links (default: `http://localhost:8080`)
 - `AD_CHOKE_POINTS_HOP_LIMIT`: Adjusts how deep the script traverses upstream relationships when counting affected attack paths (default: 3)
 - `AD_CHOKE_POINTS_LIMIT`: Maximum number of AD choke points to return (default: 200)
-- `AZURE_CHOKE_POINTS_HOP_LIMIT`: Hop limit for Azure queries (default: 3)
-- `AZURE_CHOKE_POINTS_LIMIT`: Maximum number of Azure choke points to return (default: 200)
+- `AZURE_CHOKE_POINTS_HOP_LIMIT`: Hop limit for Azure queries (default: 2)
+- `AZURE_CHOKE_POINTS_LIMIT`: Maximum number of Azure choke points to return (default: 60)
 
 Risk scoring configuration is located in `chokehound/config/risk_config.py`:
 - `RISK_WEIGHTS`: Adjusts the weight of each component in the risk calculation
@@ -207,6 +228,15 @@ Los choke points son relaciones de privilegio críticas que conectan objetos no 
 - **Análisis de Rutas de Ataque**: Entiende cuántas rutas de ataque son afectadas por cada choke point
 - **Informes Excel**: Informes Excel profesionales con formato, codificación de colores y documentación detallada
 - **Documentación de Relaciones**: Enlaces automáticos a la documentación de BloodHound para cada tipo de relación
+- **Análisis de rutas (BloodHound)**: Enlaces por choke point en Excel para abrir BloodHound CE con una consulta Cypher predefinida (`BLOODHOUND_URI` configurable)
+
+### Novedades 1.2.0
+
+- Columna Excel **Path Analysis** con hipervínculos a la UI de BloodHound para cada choke point.
+- URL web de BloodHound configurable: `BLOODHOUND_URI` en `chokehound/config/settings.py`.
+- CLI `--version` / `-V`.
+- La portada del Excel muestra la versión de ChokeHound.
+- Generación de URLs más segura si los ObjectID contienen caracteres especiales.
 
 ## Requisitos Previos
 
@@ -262,6 +292,8 @@ NEO4J_URI = "bolt://localhost:7687"
 NEO4J_USER = "neo4j"
 NEO4J_PASSWORD = "bloodhoundcommunityedition"
 DEFAULT_OUTPUT_FILENAME = "ChokeHound_report.xlsx"
+# BloodHound CE web UI (Path Analysis links in Excel); use https if you terminate TLS locally
+BLOODHOUND_URI = "http://localhost:8080"
 ```
 
 ## Uso
@@ -299,6 +331,12 @@ python chokehound.py --skip-risk-calculation
 ```
 
 Ejecuta el análisis sin calcular puntuaciones de riesgo. Esto proporciona una ejecución más rápida y resultados más simples, ordenados por el número de rutas de ataque afectadas en lugar de puntuación de riesgo. Útil para análisis rápidos o cuando solo necesitas identificar choke points sin priorización.
+
+### Mostrar versión
+
+```bash
+python chokehound.py --version
+```
 
 ## Arquitectura
 

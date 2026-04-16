@@ -17,7 +17,7 @@ NEO4J_PASSWORD = "bloodhoundcommunityedition"
 # BLOODHOUND WEB UI SETTINGS
 # ============================================================================
 
-# BloodHound web UI base URL (used for generating Analysis links in reports)
+# BloodHound web UI base URL (used for generating Path Analysis links in reports)
 BLOODHOUND_URI = "http://localhost:8080"
 
 

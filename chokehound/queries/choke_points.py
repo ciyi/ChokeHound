@@ -120,7 +120,7 @@ def post_process_choke_points_risk(df: pd.DataFrame, enable_logging: bool = Fals
     # Add unique ID column (AD1, AD2, AD3, etc.)
     df.insert(0, 'ID', [f'AD{i}' for i in range(1, len(df) + 1)])
 
-    # Add Analysis column with BloodHound visualization URL for each choke point
+    # Add Path Analysis column with BloodHound visualization URL for each choke point
     _url_cols = {'SourceObjectID', 'RelationshipType', 'TargetObjectID'}
     if _url_cols.issubset(df.columns):
         def _make_url(row):
@@ -133,7 +133,7 @@ def post_process_choke_points_risk(df: pd.DataFrame, enable_logging: bool = Fals
                     hop_limit=settings.AD_CHOKE_POINTS_HOP_LIMIT
                 )
             return ""
-        df['Analysis'] = df.apply(_make_url, axis=1)
+        df['Path Analysis'] = df.apply(_make_url, axis=1)
 
     
     if enable_logging:
@@ -182,7 +182,7 @@ def post_process_choke_points_no_risk(df: pd.DataFrame, id_prefix: str = "AD"):
     # Add unique ID column (e.g., AD1, AD2, AD3 or AZ1, AZ2, AZ3, etc.)
     df.insert(0, 'ID', [f'{id_prefix}{i}' for i in range(1, len(df) + 1)])
 
-    # Add Analysis column with BloodHound visualization URL for each choke point
+    # Add Path Analysis column with BloodHound visualization URL for each choke point
     _url_cols = {'SourceObjectID', 'RelationshipType', 'TargetObjectID'}
     if _url_cols.issubset(df.columns):
         hop_limit = (
@@ -197,7 +197,7 @@ def post_process_choke_points_no_risk(df: pd.DataFrame, id_prefix: str = "AD"):
             if pd.notna(src) and pd.notna(rel) and pd.notna(tgt):
                 return build_analysis_url(str(src), str(rel), str(tgt), hop_limit=hop_limit)
             return ""
-        df['Analysis'] = df.apply(_make_url, axis=1)
+        df['Path Analysis'] = df.apply(_make_url, axis=1)
 
     
     return df

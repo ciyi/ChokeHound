@@ -14,6 +14,8 @@ Examples:
 
 import argparse
 
+from chokehound import __version__
+
 # Import core modules
 from chokehound.core.database import DatabaseConnection
 from chokehound.core.query_executor import QueryExecutor
@@ -28,7 +30,8 @@ import chokehound.config.settings as config
 
 def banner():
     """Print ChokeHound banner."""
-    font = r"""
+    font = (
+        r"""
    ____ _           _        _   _                       _ 
   / ___| |__   ___ | | _____| | | | ___  _   _ _ __   __| |
  | |   | '_ \ / _ \| |/ / _ \ |_| |/ _ \| | | | '_ \ / _` |
@@ -36,8 +39,9 @@ def banner():
   \____|_| |_|\___/|_|\_\___|_| |_|\___/ \__,_|_| |_|\__,_|
                                       
     Tier 0 Choke Points Analysis Tool
-    v1.1.0
-    """
+"""
+        + f"    v{__version__}\n"
+    )
     print(font)
 
 
@@ -54,6 +58,11 @@ Examples:
   python chokehound.py --skip-risk-calculation
   python chokehound.py -o report.xlsx --skip-risk-calculation
         """
+    )
+    parser.add_argument(
+        '--version', '-V',
+        action='version',
+        version=f'%(prog)s {__version__}',
     )
     parser.add_argument(
         '--output', '-o',

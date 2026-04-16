@@ -18,6 +18,7 @@ from typing import Dict, Optional, List
 
 import chokehound.config.settings as config
 from chokehound.config import risk_config
+from chokehound import __version__ as chokehound_version
 
 
 # Mapping of relationship types to their BloodHound documentation URL paths
@@ -242,28 +243,28 @@ class ExcelReportGenerator:
     
     def add_analysis_hyperlinks(self, worksheet, df: pd.DataFrame):
         """
-        Render the Analysis column as clickable 'Analysis' links pointing to
+        Render the Path Analysis column as clickable 'Path' links pointing to
         the BloodHound UI URL stored in each cell value.
         """
-        if df.empty or 'Analysis' not in df.columns:
+        if df.empty or 'Path Analysis' not in df.columns:
             return
 
-        analysis_col = None
+        path_analysis_col = None
         for idx, col_name in enumerate(df.columns, 1):
-            if col_name == 'Analysis':
-                analysis_col = idx
+            if col_name == 'Path Analysis':
+                path_analysis_col = idx
                 break
 
-        if analysis_col is None:
+        if path_analysis_col is None:
             return
 
-        col_letter = get_column_letter(analysis_col)
+        col_letter = get_column_letter(path_analysis_col)
 
-        for row_idx, url in enumerate(df['Analysis'], start=2):
+        for row_idx, url in enumerate(df['Path Analysis'], start=2):
             if pd.notna(url) and url:
                 cell = worksheet[f"{col_letter}{row_idx}"]
                 cell.hyperlink = str(url)
-                cell.value = "Analysis"
+                cell.value = "Path"
                 cell.font = Font(color="0563C1", underline="single")
                 cell.alignment = Alignment(horizontal='center')
 
@@ -347,6 +348,11 @@ class ExcelReportGenerator:
                     pass
             adjusted_width = min(max_length + 2, 50)
             worksheet.column_dimensions[column_letter].width = adjusted_width
+
+        # Path Analysis holds long URLs before hyperlinks are applied; keep column narrow.
+        if 'Path Analysis' in df.columns:
+            pa_idx = list(df.columns).index('Path Analysis') + 1
+            worksheet.column_dimensions[get_column_letter(pa_idx)].width = 12
     
     def create_cover_sheet(self, workbook):
         """Create a cover sheet for the Excel report."""
@@ -394,6 +400,10 @@ class ExcelReportGenerator:
         row += 1
         cover_sheet[f'A{row}'] = "Generated:"
         cover_sheet[f'B{row}'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        row += 1
+        cover_sheet[f'A{row}'] = "ChokeHound version:"
+        cover_sheet[f'B{row}'] = chokehound_version
         
         if self.domains:
             row += 1

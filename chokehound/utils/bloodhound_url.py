@@ -6,6 +6,11 @@ from urllib.parse import quote
 import chokehound.config.settings as config
 
 
+def _cypher_string_literal(value: str) -> str:
+    """Escape a value for use inside single-quoted Cypher string literals."""
+    return value.replace("\\", "\\\\").replace("'", "\\'")
+
+
 def build_analysis_url(
     source_objectid: str,
     relationship_type: str,
@@ -32,9 +37,11 @@ def build_analysis_url(
     if hop_limit is None:
         hop_limit = config.AD_CHOKE_POINTS_HOP_LIMIT
 
+    src_lit = _cypher_string_literal(source_objectid)
+    tgt_lit = _cypher_string_literal(target_objectid)
     query = (
-        f"MATCH (src {{objectid: '{source_objectid}'}}),"
-        f"(t:Tag_Tier_Zero {{objectid: '{target_objectid}'}})\n"
+        f"MATCH (src {{objectid: '{src_lit}'}}),"
+        f"(t:Tag_Tier_Zero {{objectid: '{tgt_lit}'}})\n"
         f"MATCH p1=(o)-[*0..{hop_limit}]->(src) "
         f"WHERE NOT o:Tag_Tier_Zero AND ALL(n IN nodes(p1) WHERE NOT n:Tag_Tier_Zero)\n"
         f"MATCH p2=(src)-[:{relationship_type}]->(t)\n"

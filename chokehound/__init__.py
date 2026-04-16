@@ -5,7 +5,7 @@ A specialized tool to identify and analyze Tier 0 choke points in Active Directo
 and Azure/Entra ID environments from data collected by BloodHound.
 """
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 
 
