@@ -12,6 +12,7 @@ from chokehound.config.risk_config import (
     normalize_risk_score
 )
 from chokehound.config import settings
+from chokehound.utils.bloodhound_url import build_analysis_url
 
 
 # ============================================================================
@@ -118,6 +119,22 @@ def post_process_choke_points_risk(df: pd.DataFrame, enable_logging: bool = Fals
     
     # Add unique ID column (AD1, AD2, AD3, etc.)
     df.insert(0, 'ID', [f'AD{i}' for i in range(1, len(df) + 1)])
+
+    # Add Analysis column with BloodHound visualization URL for each choke point
+    _url_cols = {'SourceObjectID', 'RelationshipType', 'TargetObjectID'}
+    if _url_cols.issubset(df.columns):
+        def _make_url(row):
+            src = row.get('SourceObjectID')
+            rel = row.get('RelationshipType')
+            tgt = row.get('TargetObjectID')
+            if pd.notna(src) and pd.notna(rel) and pd.notna(tgt):
+                return build_analysis_url(
+                    str(src), str(rel), str(tgt),
+                    hop_limit=settings.AD_CHOKE_POINTS_HOP_LIMIT
+                )
+            return ""
+        df['Analysis'] = df.apply(_make_url, axis=1)
+
     
     if enable_logging:
         return df, risk_breakdowns
@@ -164,6 +181,24 @@ def post_process_choke_points_no_risk(df: pd.DataFrame, id_prefix: str = "AD"):
     
     # Add unique ID column (e.g., AD1, AD2, AD3 or AZ1, AZ2, AZ3, etc.)
     df.insert(0, 'ID', [f'{id_prefix}{i}' for i in range(1, len(df) + 1)])
+
+    # Add Analysis column with BloodHound visualization URL for each choke point
+    _url_cols = {'SourceObjectID', 'RelationshipType', 'TargetObjectID'}
+    if _url_cols.issubset(df.columns):
+        hop_limit = (
+            settings.AZURE_CHOKE_POINTS_HOP_LIMIT
+            if id_prefix == "AZ"
+            else settings.AD_CHOKE_POINTS_HOP_LIMIT
+        )
+        def _make_url(row):
+            src = row.get('SourceObjectID')
+            rel = row.get('RelationshipType')
+            tgt = row.get('TargetObjectID')
+            if pd.notna(src) and pd.notna(rel) and pd.notna(tgt):
+                return build_analysis_url(str(src), str(rel), str(tgt), hop_limit=hop_limit)
+            return ""
+        df['Analysis'] = df.apply(_make_url, axis=1)
+
     
     return df
 

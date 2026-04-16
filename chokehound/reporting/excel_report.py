@@ -240,6 +240,33 @@ class ExcelReportGenerator:
                 cell.font = Font(color="0563C1", underline="single")
                 cell.value = relationship_type_str
     
+    def add_analysis_hyperlinks(self, worksheet, df: pd.DataFrame):
+        """
+        Render the Analysis column as clickable 'Analysis' links pointing to
+        the BloodHound UI URL stored in each cell value.
+        """
+        if df.empty or 'Analysis' not in df.columns:
+            return
+
+        analysis_col = None
+        for idx, col_name in enumerate(df.columns, 1):
+            if col_name == 'Analysis':
+                analysis_col = idx
+                break
+
+        if analysis_col is None:
+            return
+
+        col_letter = get_column_letter(analysis_col)
+
+        for row_idx, url in enumerate(df['Analysis'], start=2):
+            if pd.notna(url) and url:
+                cell = worksheet[f"{col_letter}{row_idx}"]
+                cell.hyperlink = str(url)
+                cell.value = "Analysis"
+                cell.font = Font(color="0563C1", underline="single")
+                cell.alignment = Alignment(horizontal='center')
+
     def color_risk_column(self, worksheet, df: pd.DataFrame):
         """Color the RiskScore column based on risk levels."""
         if df.empty or 'RiskScore' not in df.columns:
@@ -747,6 +774,7 @@ class ExcelReportGenerator:
                     try:
                         self.format_sheet_as_table(worksheet, df)
                         self.add_relationship_type_hyperlinks(worksheet, df)
+                        self.add_analysis_hyperlinks(worksheet, df)
                         self.color_risk_column(worksheet, df)
                     except Exception as e:
                         print(f"  [WARNING] Error formatting sheet '{safe_sheet_name}': {e}")
